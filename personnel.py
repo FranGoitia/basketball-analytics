@@ -4,11 +4,10 @@ from sqlalchemy import Column, Integer, Numeric, String, ForeignKey, Date, Uniqu
 from sqlalchemy.orm import relationship
 import numpy as np
 
-from model import Session, Base, FOUR_FACTORS_PLS, CRITICAL_FACTORS_PLS,  \
-                ALL_METRICS_PLS
+from model import Session, Base
 from model.overview import Match, League
 from model.stats import PlayerMatchStats, PlayerSeasonStats, PlayerSeasonHomeStats, PlayerSeasonAwayStats
-from libcommon.constants import RAW_STATS
+
 
 class Player(Base):
     __tablename__ = 'players'
