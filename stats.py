@@ -2,7 +2,7 @@ from sqlalchemy import (Column, Integer, String, Numeric, ForeignKey,
                         UniqueConstraint, Date)
 from sqlalchemy.orm import relationship
 
-from model import Base
+from . import Base
 
 
 class TeamMatchStats(Base):

@@ -11,8 +11,8 @@ from sqlalchemy.orm import relationship
 from geoalchemy2 import Geometry
 import numpy as np 
 
-from model import Session, Base, enums
-from model.stats import TeamMatchStats, TeamSeasonStats, TeamSeasonHomeStats, TeamSeasonAwayStats
+from . import Session, Base, enums
+from stats import TeamMatchStats, TeamSeasonStats, TeamSeasonHomeStats, TeamSeasonAwayStats
 
 
 class GoalAttempt(Base):
@@ -70,8 +70,40 @@ class Cross(Base):
 	injurytime_play = Column(Boolean)
 	start = Column(Geometry('POINT'))
 	end = Column(Geometry('POINT'))
+    player_id = Column(ForeignKey('players.id'), index=True)
+    team_id = Column(ForeignKey('teams.id'), index=True)
 	key_pass = Column(Boolean)
 	# type: outcome of the cross enum
+
+
+class Corner(Base):
+    __tablename__ = 'corners'
+
+    id = Column(primary_key=True)
+    mins = Column(Integer)
+    secs = Column(Integer)
+    minsecs = Column(Integer)
+    injurytime_play = Column(Boolean)
+    start = Column(Geometry('POINT'))
+    end = Column(Geometry('POINT'))
+    player_id = Column(ForeignKey('players.id'), index=True)
+    team_id = Column(ForeignKey('teams.id'), index=True)
+    # type enum
+
+
+class SetPiece(Base):
+    __tablename__ = 'set_pieces'
+
+    id = Column(primary_key=True)
+    mins = Column(Integer)
+    secs = Column(Integer)
+    minsecs = Column(Integer)
+    player_id = Column(ForeignKey('players.id'), index=True)
+    team_id = Column(ForeignKey('teams.id'), index=True)
+    start = Column(Geometry('POINT'))
+    end = Column(Geometry('POINT'))
+    # type enum
+    # pass ?
 
 
 class Dribble(Base):
@@ -152,112 +184,99 @@ class Clearance(Base):
 	# action_type
 
 
-class Foul(Base):
-	__tablename__ = 'fouls'
+class Block(Base):
+	__tablename__ = 'blocks'
 
-	mins = Column(Integer)
-	secs = Column(Integer)
-	minsecs = Column(Integer)
-	injury_time_play = Column(Boolean)
-	loc = Column(Geometry('POINT'))
-	player_id = Column(ForeignKey('players'), index=True)
-	team_id = Column(ForeignKey('teams.id'), index=True)
-	other_player_id = Column(ForeignKey('players.id'), index=True)
-
-
-class Card(Base):
-	__tablename__ = 'cards'
-
-	mins = Column(Integer)
-	secs = Column(Integer)
-	minsecs = Column(Integer)
-	injury_time_play = Column(Boolean)
-	# type = cards enum
-	player_id = Column(ForeignKey('players'), index=True)
-	team_id = Column(ForeignKey('teams.id'), index=True)
-
-
-class BlockedPass(Base):
-	__tablename__ = 'blocks_passes'
-
-	action_type
-	coordinates
-	end
-	headed
-	injurytime_play
-	loc
-	middle
-	player_id
-	mins
-	minsec
-	secs
-	shot
-	shot_player
-	shot_team
-	start
-	team_id
-	type
-
-
-class BlockedCross(Base):
-	__tablename__ = 'blocked_crosses'
-
-	action_type
-	coordinates
-	end
-	headed
-	injurytime_play
-	loc
-	middle
-	player_id
-	mins
-	minsec
-	secs
-	shot
-	shot_player
-	shot_team
-	start
-	team_id
-	type
-
-
-class BlockedShot(Base):
-	__tablename__ = 'blocked_crosses'
-
-	action_type
-	coordinates
-	end
-	headed
-	injurytime_play
-	loc
-	middle
-	player_id
-	mins
-	minsec
-	secs
-	shot
-	shot_player
-	shot_team
-	start
-	team_id
-	type
+    mins = Column(Integer)
+    secs = Column(Integer)
+    minsecs = Column(Integer)
+    injury_time_play = Column(Boolean)
+    # type enum
+    headed = Column(Boolean)
+	player_id = Column(ForeignKey('players.id'), index=True)
+    team_id = Column(ForeignKey('teams.id'), index=True)
+    loc = Column(Geometry('POINT'))
+    start = Column(Geometry('POINT'))
+	end = Column(Geometry('POINT'))
+    shot_player_id = Column(ForeignKey('players.id'), index=True)
+    shot_team_id = Column(ForeignKey('teams.id'), index=True)
+    shot = Column(Boolean) # ??
+	# coordinates ??
+	# middle ??
+    # action_type enum ??
 
 
 class GoalKeep(Base):
 	__tablename__ = 'goalkeeping'
 
-	action_type
-	headed
-	injurytime_play
-	player_id
-	team_id
+	# action_type enum
+    mins = Column(Integer)
+    secs = Column(Integer)
+    minsecs = Column(Integer)
+    injury_time_play = Column(Boolean)
+	headed = Column(Boolean)
+	player_id = Column(ForeignKey('players.id'), index=True)
+    team_id = Column(ForeignKey('teams.id'), index=True)
+    # type enum
+
+
+class BallOut(Base):
+    __tablename__ = 'balls_out'
+
+    mins = Column(Integer)
+    secs = Column(Integer)
+    minsecs = Column(Integer)
+    injury_time_play = Column(Boolean)
+    start = Column(Geometry('POINT'))
+    end = Column(Geometry('POINT'))
+    player_id = Column(ForeignKey('players.id'), index=True)
+    team_id = Column(ForeignKey('teams.id'), index=True)
+    # action_type enum
+    # type enum
 
 
 class Offside(Base):
 	__tablename__ = 'offsides'
 
-	mins
-	minsec
-	player_id
-	secs
-	team
+	mins = Column(Integer)
+    secs = Column(Integer)
+    minsecs = Column(Integer)
+    player_id = Column(ForeignKey('players.id'), index=True)
+    team_id = Column(ForeignKey('teams.id'), index=True)
+
+
+class Foul(Base):
+    __tablename__ = 'fouls'
+
+    mins = Column(Integer)
+    secs = Column(Integer)
+    minsecs = Column(Integer)
+    injury_time_play = Column(Boolean)
+    loc = Column(Geometry('POINT'))
+    player_id = Column(ForeignKey('players'), index=True)
+    team_id = Column(ForeignKey('teams.id'), index=True)
+    other_player_id = Column(ForeignKey('players.id'), index=True)
+
+
+class Card(Base):
+    __tablename__ = 'cards'
+
+    mins = Column(Integer)
+    secs = Column(Integer)
+    minsecs = Column(Integer)
+    injury_time_play = Column(Boolean)
+    # type = cards enum
+    player_id = Column(ForeignKey('players'), index=True)
+    team_id = Column(ForeignKey('teams.id'), index=True)
+
+
+class Substitution(Base):
+    __tablename__ = 'substitutions'
+
+    mins = Column(Integer)
+    secs = Column(Integer)
+    minsecs = Column(Integer)
+    injury_time_play = Column(Boolean)
+    player_to_sub_id = Column(ForeignKey('players.id'), index=True)
+    sub_to_player_id = Column(ForeignKey('players.id'), index=True)
+    team_id = Column(ForeignKey('teams.id'), index=True)

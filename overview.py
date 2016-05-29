@@ -9,8 +9,8 @@ from sqlalchemy import Column, Integer, Numeric, String, ForeignKey, Date, Time,
 from sqlalchemy.orm import relationship
 import numpy as np 
 
-from model import Session, Base, enums
-from model.stats import TeamMatchStats, TeamSeasonStats, TeamSeasonHomeStats, TeamSeasonAwayStats
+from . import Session, Base, enums
+from stats import TeamMatchStats, TeamSeasonStats, TeamSeasonHomeStats, TeamSeasonAwayStats
 
 
 class Country(Base):
@@ -33,6 +33,7 @@ class City(Base):
     teams = relationship('Team', secondary='cities_teams')
 
     UniqueConstraint(name, country_id)
+
 
 class CityDistance(Base):
     __tablename__ = 'cities_distances'

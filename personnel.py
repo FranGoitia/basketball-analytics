@@ -4,9 +4,9 @@ from sqlalchemy import Column, Integer, Numeric, String, ForeignKey, Date, Uniqu
 from sqlalchemy.orm import relationship
 import numpy as np
 
-from model import Session, Base
-from model.overview import Match, League
-from model.stats import PlayerMatchStats, PlayerSeasonStats, PlayerSeasonHomeStats, PlayerSeasonAwayStats
+from . import Session, Base
+from overview import Match, League
+from stats import PlayerMatchStats, PlayerSeasonStats, PlayerSeasonHomeStats, PlayerSeasonAwayStats
 
 
 class Player(Base):
@@ -19,8 +19,6 @@ class Player(Base):
     country = relationship('Country', backref='players')
     position = Column(String, nullable=True)
     teams = relationship('Team', secondary='contracts')
-    college_id = Column(ForeignKey('teams.id'), index=True, nullable=True)
-    college = relationship('Team', foreign_keys=[college_id], backref='grad_players')
     number = Column(Integer)
     height = Column(Numeric)
     weight = Column(Numeric)
